@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Prana</title>
+        <link rel="icon" href="imagenes/Prana-loggo.png">
+        <link rel="stylesheet" href="style.css">
+    
+    </head>
+
+<body>
+
+    <header class="header">
+        <div class="menu container">
+            <img class="logo" src="imagenes/Prana.png" alt="">
+            <input type="checkbox" id="menu"/>
+            <label for="menu">
+                <img src="imagenes/menu.png" class="menu-icono" alt="menu">
+            </label>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="ropa.html">Inicio</a></li>
+                    <li><a href="Productos.html">Productos</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                    <li><a href="seguimientoEnvio.html">Seguimiento</a></li>
+                </ul>
+            </nav>
+            <div>
+                <ul>
+                    <li class="submenu">
+                        <img src="imagenes/car.svg" id="img-carrito" alt="">
+                        <div id="carrito">
+                            <table id="lista-carrito">
+                                <thead>
+                                    <tr>
+                                        <th>Imagen</th>
+                                        <th>Nombre</th>
+                                        <th>Precio</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <a href="#" id="vaciar-carrito" class="btn-2">Vaciar Carrito</a>
+                            <a href="compra1.html" id="Comprar" class="btn-2">Comprar Todo</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+            <main class="products c" id="lista-1" data-id="1">
+
+                <h2></h2>
+        
+                <div class="product-compra">
+        
+                    <div class="product-c">
+                        <img src="imagenes/1.png" alt="">
+                    </div>
+                    <p>$1999</p><B> Desea llevar a cabo esta compra?
+
+        
+                </div>
+        
+            </main>
+        </div>
+        <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <h1>Selecciona un Método de Pago</h1>
+
+    <!-- Contenedor para mostrar errores -->
+    <div id="errores"></div>
+
+    <!-- Contenedor para el formulario de tarjeta -->
+    <div id="formulario-tarjeta">
+        <label for="num-tarjeta">Número de Tarjeta:</label>
+        <div id="num-tarjeta" style="width: 300px;" required></div>
+
+        <label for="fecha-exp">Fecha de Expiración:</label>
+        <div id="fecha-exp" style="width: 100px;"></div>
+
+        <label for="cvc">CVC:</label>
+        <div id="cvc" style="width: 50px;"></div>
+
+    </div>
+
+
+    <!-- Botones para diferentes métodos de pago -->
+    <button id="tarjetaCredito">Tarjeta de Crédito</button>
+    <button id="paypal">PayPal</button>
+    <button id="compra"><a href="seguimientoEnvio.html">Comprar</a></button>
+
+
+
+    <script>
+        // Configuración básica de Stripe (debes reemplazar con tu clave de API de Stripe)
+        const stripe = Stripe('tu_clave_publica_de_stripe');
+        const elements = stripe.elements();
+
+        // Estilos para los elementos de Stripe
+        const style = {
+            base: {
+                fontSize: '16px',
+                color: '#32325d',
+            },
+        };
+
+        // Crea instancias de los elementos de Stripe
+        const cardNumber = elements.create('cardNumber', { style });
+        const cardExpiry = elements.create('cardExpiry', { style });
+        const cardCvc = elements.create('cardCvc', { style });
+
+        // Monta los elementos de Stripe en el DOM
+        cardNumber.mount('#num-tarjeta');
+        cardExpiry.mount('#fecha-exp');
+        cardCvc.mount('#cvc');
+
+        // Función para crear una instancia de elementos de Stripe y abrir la ventana de pago
+        const iniciarPago = async (tipoMetodoPago) => {
+            try {
+                const { paymentMethod, error } = await stripe.createPaymentMethod({
+                    type: tipoMetodoPago,
+                    card: cardNumber,
+                });
+
+                if (error) {
+                    console.error(error.message);
+                    document.getElementById('errores').innerText = error.message;
+                } else {
+                    // Envía el ID del método de pago al servidor para procesar el pago
+                    fetch('/procesar-pago', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ paymentMethodId: paymentMethod.id }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        // Aquí puedes redirigir o realizar otras acciones después del pago exitoso
+                    });
+                }
+            } catch (error) {
+                console.error(error.message);
+            }
+        };
+
+        // Event listeners para los botones de métodos de pago
+        document.getElementById('tarjetaCredito').addEventListener('click', () => {
+            iniciarPago('card');
+        });
+
+        document.getElementById('paypal').addEventListener('click', () => {
+            // Lógica para iniciar pago con PayPal
+            console.log('Iniciar pago con PayPal');
+        });
+
+        
+    </script>
+
+    </header>
+
+    <footer class="footer">
+        <div class="footer-content container">
+            <div class="link">
+                <h3>Dihuen</h3>
+                <ul>
+                    <li><a href="#">Dihuen</a></li>
+                    <li><a href="#">Dihuen</a></li>
+                    <li><a href="#">Dihuen</a></li>
+                    <li><a href="#">Dihuen</a></li>
+                </ul>
+            </div>
+
+            <div class="link">
+                <h3>Dihuen</h3>
+                <ul>
+                    <li><a href="#">Dihuen</a></li>
+                    <li><a href="#">Dihuen</a></li>
+                    <li><a href="#">Dihuen</a></li>
+                    <li><a href="#">Dihuen</a></li>
+                </ul>
+            </div>
+
+            <div class="link">
+                <h3>Dihuen</h3>
+                <ul>
+                    <li><a href="#">Dihuen</a></li>
+                    <li><a href="#">Dihuen</a></li>
+                    <li><a href="#">Dihuen</a></li>
+                    <li><a href="#">Dihuen</a></li>
+                </ul>
+            </div>
+
+            <div class="link">
+                <h3>Dihuen</h3>
+                <ul>
+                    <li><a href="#">Dihuen</a></li>
+                    <li><a href="#">Dihuen</a></li>
+                    <li><a href="#">Dihuen</a></li>
+                    <li><a href="#">Dihuen</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </footer>
+
+
+    <script src="scrip.js"></script>
+</body>
+</html>
